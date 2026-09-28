@@ -60,5 +60,5 @@ Img_SuperRes = real(Img_SuperRes*exp(1i*PhaseFac));
 Img_SuperRes = permute(Img_SuperRes,[2,1,3,4]);
 %%
 disp('Done');
-meanDWI=mean(Img_SuperRes(:,:,:,2:31),4);
+% meanDWI=mean(Img_SuperRes(:,:,:,2:31),4);
 % save('meanDWI','meanDWI','-v7.3')

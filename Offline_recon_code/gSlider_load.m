@@ -18,7 +18,13 @@ mag_data=nifti_info.vol;
     f_raw=strcat(f_path,f_name);
     nifti_info=load_nifti(f_raw);
 phase_data=nifti_info.vol;
-phase_data=(phase_data-2^11)./2^11.*pi;
+% raw Siemens phase is 0..4095; dcm2niix stores it with scl_slope=2, scl_inter=-4096,
+% which load_nifti applies (-4096..4094). Scale either convention to -pi..pi.
+if min(phase_data(:))<0
+    phase_data=phase_data./2^12.*pi;
+else
+    phase_data=(phase_data-2^11)./2^11.*pi;
+end
 
 tps=min(size(mag_data,4),size(phase_data,4));
 cplx_data=mag_data(:,:,:,1:tps).*exp(1i*phase_data(:,:,:,1:tps));
