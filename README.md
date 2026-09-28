@@ -12,7 +12,7 @@ MATLAB code for the offline super-resolution reconstruction of gSlider-SMS diffu
 | `Offline_recon_code/RF_5x_90thick_1p00t_4p3mm_Verse1_CLv1_B1_Mzsim_scale1p0_MOut.mat` | Simulated slice profiles of the 5 gSlider RF encodings at 11 B1 scales (0.7 to 1.2) |
 | `Offline_recon_code/offline_recon_instruction.pptx` | The original step-by-step slides |
 | `Offline_recon_code/library/`, `Nifti_Analyze/`, `imagine/` | Helper functions, NIfTI input/output, image viewer |
-| `providedfiles_withgSlider/` | Example data, described below |
+| `data/` | Example data, described below |
 
 ## Requirements
 
@@ -63,7 +63,7 @@ Assumptions:
 
 ## Example data
 
-All files are in `providedfiles_withgSlider/`.
+All files are in `data/`.
 
 | File | Contents |
 |---|---|
