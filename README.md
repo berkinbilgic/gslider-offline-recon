@@ -8,7 +8,7 @@ MATLAB code for the offline super-resolution reconstruction of gSlider-SMS diffu
 |---|---|
 | `Offline_recon_code/gSlider_load.m` | Loads the gSlider magnitude and phase NIfTI files into one complex array |
 | `Offline_recon_code/B1map_load.m` | Loads the B1 map and brain mask, resamples B1 onto the gSlider grid and bins it |
-| `Offline_recon_code/demo_gSlider_B1corr_v4.m` | Runs the B1-corrected gSlider reconstruction |
+| `Offline_recon_code/demo_gSlider_B1corr_v5.m` | Runs the B1-corrected gSlider reconstruction and saves `Img_SuperRes` as NIfTI |
 | `Offline_recon_code/RF_5x_90thick_1p00t_4p3mm_Verse1_CLv1_B1_Mzsim_scale1p0_MOut.mat` | Simulated slice profiles of the 5 gSlider RF encodings at 11 B1 scales (0.7 to 1.2) |
 | `Offline_recon_code/offline_recon_instruction.pptx` | The original step-by-step slides |
 | `Offline_recon_code/library/`, `Nifti_Analyze/`, `imagine/` | Helper functions, NIfTI input/output, image viewer |
@@ -27,12 +27,14 @@ In MATLAB, change into `Offline_recon_code` and run:
 ```matlab
 gSlider_load            % select ..._23001_mag.nii, then ..._24001_ph.nii
 B1map_load              % select ..._tfl_b1map_..._27001.nii, then bet_..._mask.nii.gz
-demo_gSlider_B1corr_v4  % select RF_5x_90thick_..._MOut.mat from this folder
+demo_gSlider_B1corr_v5  % select RF_5x_90thick_..._MOut.mat from this folder, then ..._23001_mag.nii again for the output header
 ```
 
 Run the three scripts in this order in one session. `gSlider_load.m` starts with `clear`, and each later script uses variables the earlier ones leave in the workspace.
 
-The result, `Img_SuperRes`, stays in the workspace and is not written to disk. For the example data it is 224 × 224 × 130 × 7: the 26 slabs of 5 mm become 130 slices of 1 mm, for each of the 7 diffusion volumes. The example takes about 8 minutes on an 80-core Linux server. The last line of the demo swaps the first two axes, so `Img_SuperRes` is transposed in-plane relative to the input NIfTI files.
+The result, `Img_SuperRes`, stays in the workspace. For the example data it is 224 × 224 × 130 × 7: the 26 slabs of 5 mm become 130 slices of 1 mm, for each of the 7 diffusion volumes. The example takes about 8 minutes on an 80-core Linux server. The demo swaps the first two axes, so `Img_SuperRes` is transposed in-plane relative to the input NIfTI files.
+
+The last cell of the demo also saves the result as `<mag name>_SuperRes.nii`, in the folder of the magnitude file you select, with a header derived from that file. Each 5 mm slab becomes 5 slices of 1 mm centred on that slab, and the in-plane axes match the input files. The values are float32, as reconstructed, including negative values. The cell stops instead of overwriting an existing file.
 
 ## Preparing your own data
 
@@ -59,7 +61,7 @@ Assumptions:
 
 - `B1map_load.m`: B1 resampling in world coordinates, described above.
 - `gSlider_load.m`: phase scaling. The original formula, (p − 2048)/2048 · π, assumes raw values. With dcm2niix files it doubled the phase and shifted it by π, so the phase spanned −3π to π.
-- `demo_gSlider_B1corr_v4.m`: the last line, which averaged volumes 2 to 31 into `meanDWI`, is commented out. It failed for datasets with fewer than 31 volumes, such as the example.
+- `demo_gSlider_B1corr_v5.m`: the line that averaged volumes 2 to 31 into `meanDWI` is commented out. It failed for datasets with fewer than 31 volumes, such as the example. A final cell saves `Img_SuperRes` as NIfTI, as described above. Apart from that cell, v5 is the same as `demo_gSlider_B1corr_v4.m`, which is kept unchanged in `scratch/` for reference.
 
 ## Example data
 
